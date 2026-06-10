@@ -376,52 +376,39 @@
 
     <script>
     document.getElementById('login-form').addEventListener('submit', async function(event) {
-        event.preventDefault();
+    event.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
 
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
+    const isDemo = email === '321' && password === '321';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidEmail = emailRegex.test(email);
+    const isValidPassword = password.length >= 6;
 
-        // Acesso rápido de manutenção
-        const isDemo = email === '321' && password === '321';
+    if (!isDemo && (!isValidEmail || !isValidPassword)) {
+        document.getElementById('email').style.borderColor = !isValidEmail ? '#ff3b30' : '';
+        document.getElementById('password').style.borderColor = !isValidPassword ? '#ff3b30' : '';
+        setTimeout(() => {
+            document.getElementById('email').style.borderColor = '';
+            document.getElementById('password').style.borderColor = '';
+        }, 2000);
+        return;
+    }
 
-        // Valida formato de email real
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const isValidEmail = emailRegex.test(email);
-        const isValidPassword = password.length >= 6;
+    const btn = document.getElementById('login-btn');
+    const btnText = document.getElementById('btn-text');
+    const spinner = document.getElementById('spinner');
 
-        if (!isDemo && (!isValidEmail || !isValidPassword)) {
-            document.getElementById('email').style.borderColor = !isValidEmail ? '#ff3b30' : '';
-            document.getElementById('password').style.borderColor = !isValidPassword ? '#ff3b30' : '';
-            setTimeout(() => {
-                document.getElementById('email').style.borderColor = '';
-                document.getElementById('password').style.borderColor = '';
-            }, 2000);
-            return;
-        }
+    btn.disabled = true;
+    btnText.style.display = 'none';
+    spinner.style.display = 'block';
 
-        const btn = document.getElementById('login-btn');
-        const btnText = document.getElementById('btn-text');
-        const spinner = document.getElementById('spinner');
-        btn.disabled = true;
-        btnText.style.display = 'none';
-        spinner.style.display = 'block';
-
-        try {
-            const response = await fetch('/.netlify/functions/salvar-login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-            if (!response.ok) throw new Error('Erro no servidor');
-            window.location.href = 'videos.html';
-        } catch (error) {
-            console.error('Erro:', error);
-            alert('Ocorreu um erro. Por favor, tente novamente.');
-            btn.disabled = false;
-            btnText.style.display = 'block';
-            spinner.style.display = 'none';
-        }
-    });
+    // Por enquanto redireciona direto
+    // Quando tiver o backend pronto, reativa o fetch aqui
+    setTimeout(() => {
+        window.location.href = 'videos.html';
+    }, 1000);
+});
 </script>
 
 </body>
